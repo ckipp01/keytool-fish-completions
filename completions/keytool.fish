@@ -110,6 +110,12 @@ function __fish_keytool_subcommand_alias
    echo -alias\t"name of the entry to process"
 end
 
+#keytool error: java.lang.IllegalArgumentException:
+#The -keystore or -storetype option cannot be used with the -cacerts option
+function __fish_keytool_subcommand_cacerts
+   echo -cacerts\t"access the cacerts keystore"
+end
+
 function __fish_keytool_subcommand_dname
    echo -dname\t"distinguished name"
 end
@@ -126,10 +132,12 @@ function __fish_keytool_subcommand_keypass
    echo -keypass\t"key password"
 end
 
+# NOTE can't be used with -cacerts
 function __fish_keytool_subcommand_keystore
    echo -keystore\t"keystore name"
 end
 
+# TODO can this be used with protected
 function __fish_keytool_subcommand_protected
    echo -protected\t"password through protected mechanism"
 end
@@ -156,13 +164,18 @@ function __fish_keytool_subcommand_storepass
    echo -storepass\t"keystore password"
 end
 
-# NOTE can't be used with -cacerts
+#keytool error: java.lang.IllegalArgumentException:
+#The -keystore or -storetype option cannot be used with the -cacerts option
 function __fish_keytool_subcommand_storetype
    echo -storetype\t"keystore type"
 end
 
 function  __fish_keytool_subcommand_v
    echo -v\t"verbose output"
+end
+
+function __fish_keytool_subcommand_destalias
+   echo -v\t"destination alias"
 end
 
 
@@ -239,7 +252,7 @@ complete -f -c keytool \
    -a "(__fish_keytool_subcommand_storepass)"
 
 complete -f -c keytool \
-   -n "__fish_seen_subcommand_from -certreq" \
+   -n "__fish_seen_subcommand_from -certreq; and not __fish_seen_subcommand_from -cacerts" \
    -a "(__fish_keytool_subcommand_storetype)"
 
 complete -f -c keytool \
@@ -264,6 +277,58 @@ set -l keytool_changealias_subcommands "\
    -storepass \
    -storetype \
    -v"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_addprovider)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_alias)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias; and not __fish_seen_subcommand_from -storetype -keytstore" \
+   -a "(__fish_keytool_subcommand_cacerts)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_destalias)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_keypass)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias; and not __fish_seen_subcommand_from -cacerts" \
+   -a "(__fish_keytool_subcommand_keystore)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_protected)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_providerclass)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_providername)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_providerpath)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_storepass)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias; and not __fish_seen_subcommand_from -cacerts" \
+   -a "(__fish_keytool_subcommand_storetype)"
+
+complete -f -c keytool \
+   -n "__fish_seen_subcommand_from -changealias" \
+   -a "(__fish_keytool_subcommand_v)"
 
 set -l keytool_delete_subcommands "\
    -addprovider \
